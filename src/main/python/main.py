@@ -40,6 +40,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dialog = None
         self.setIcons(ic1=app.get_resource('plus.png'), ic2=app.get_resource('add.png'), ic3=app.get_resource('clear.png'), ic4=app.get_resource('reset.png'), ic5=app.get_resource('exit.png'))
         self.set_menu_toolbar_button_action()
+        self.set_mainpage_buttons()
         self.ui.txt_stat.setText(self.FILEDATA.get_status_txt())
 
     def setIcons(self, **arg):
@@ -125,6 +126,237 @@ class MainWindow(QtWidgets.QMainWindow):
             self.about_page.ui.name.setText("NW File Renamer")
         self.about_page.destroy()
         self.about_page.show()
+
+    def show_help_dialog(self, no):
+        if self.dialog is None:
+            self.dialog = QtWidgets.QWidget()
+            font = QtGui.QFont()
+            font.setPointSize(11)
+            self.dialog.setFont(font)
+            self.dialog.setWindowTitle("Help")
+            self.dialog.gridlayout = QtWidgets.QGridLayout(self.dialog)
+            self.dialog.main_text = QtWidgets.QTextBrowser(self.dialog)
+            self.dialog.gridlayout.addWidget(self.dialog.main_text, 0, 0, 1, 2)
+            self.dialog.bt_close = QtWidgets.QPushButton(self.dialog)
+            sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+            sizePolicy.setHorizontalStretch(0)
+            sizePolicy.setVerticalStretch(0)
+            sizePolicy.setHeightForWidth(self.dialog.bt_close.sizePolicy().hasHeightForWidth())
+            self.dialog.bt_close.setSizePolicy(sizePolicy)
+            self.dialog.bt_close.setText("Close")
+            self.dialog.gridlayout.addWidget(self.dialog.bt_close, 1, 1, 1, 1)
+            self.dialog.setWindowIcon(QtGui.QIcon(self.main_icon))
+            self.dialog.setWindowModality(QtCore.Qt.ApplicationModal)
+            QtWidgets.QShortcut(QtGui.QKeySequence('Esc'), self.dialog).activated.connect(lambda: self.dialog.close())
+            self.dialog.bt_close.clicked.connect(lambda: self.dialog.close())
+        
+        if no == 1:
+            self.dialog.setFixedWidth(400)
+            self.dialog.setFixedHeight(270)
+            self.dialog.main_text.setHtml("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+            "p, li { white-space: pre-wrap; }\n"
+            "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-size:12pt; font-weight:600; text-decoration: underline;\">You can use these statement in name format :</span></p>\n"
+            "<p style=\"-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Arial'; font-weight:600; text-decoration: underline;\"><br /></p>"
+            "<table border=\"0\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;\" cellspacing=\"2\" cellpadding=\"0\">\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">&lt;no&gt;</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get file number </span></p></td></tr>\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">&lt;file&gt;</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get full filename </span></p></td></tr>\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">&lt;filename&gt;</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get filename without extension </span></p></td></tr>\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">&lt;ext&gt;</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get file extension </span></p></td></tr>\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">&lt;c_date&gt;</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get creation date </span></p></td></tr>\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">&lt;m_date&gt;</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get modification date </span></p></td></tr>\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">&lt;size&gt;</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get file size </span></p></td></tr>\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">&lt;sizeb&gt;</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get file size in bytes </span></p></td></tr></table></body></html>")
+        elif no == 2:
+            self.dialog.setFixedWidth(590)
+            self.dialog.setFixedHeight(250)
+            self.dialog.main_text.setHtml("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+            "p, li { white-space: pre-wrap; }\n"
+            "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-size:12pt; font-weight:600; text-decoration: underline;\">You can use these statement in date format :</span></p>\n"
+            "<p style=\"-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'Arial\'; font-size:12pt; font-weight:600; text-decoration: underline;\"><br /></p>\n"
+            "<table border=\"0\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;\" cellspacing=\"2\" cellpadding=\"0\">\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">%a</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get short weekday (Sun , Mon)</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">   |  </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">%A</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get full weekday (Sunday , Monday)</span></p></td></tr>\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">%d</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get day (01, 24)</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">   |  </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">%m</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get month (01, 12)</span></p></td></tr>\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">%b</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get short month (Jan, Feb)</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">   |  </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">%B</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get full month (January, February)</span></p></td></tr>\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">%y</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get short year (99, 20)</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">   |  </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">%Y</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get full year(1999, 2020)</span></p></td></tr>\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">%I</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get Hour 12-hour clock (4, 12)</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">   |  </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">%H</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get Hour 24-hour clock (6, 23)</span></p></td></tr>\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">%M</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get minute (10, 59)</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">   |  </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">%S</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get second (10, 59)</span></p></td></tr>\n"
+            "<tr>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\">%%</span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\'; font-weight:600;\"> : </span></p></td>\n"
+            "<td>\n"
+            "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial\';\">get \'%\' character</span></p></td>\n"
+            "<td></td>\n"
+            "<td></td>\n"
+            "<td></td>\n"
+            "<td></td></tr></table></body></html>")
+            
+        self.dialog.destroy()
+        self.dialog.show()
+
+    def set_mainpage_buttons(self):
+        # mainbar page 1
+        self.ui.bt_rename_1.clicked.connect(lambda: self.go_for_rename(1, i1=self.ui.rn_1_input_1.currentIndex(), i2=self.ui.rn_1_input_2.text()))
+        # self.ui.bt_reset_1.clicked.connect(lambda: self.reset_page_1())
+        def disable_wanted_ext(self, i):
+            if i == 2:
+                self.ui.widget_1_1.setEnabled(False)
+            else:
+                self.ui.widget_1_1.setEnabled(True)
+        self.ui.rn_1_input_1.currentIndexChanged['int'].connect(lambda i: disable_wanted_ext(self, i))
+        
+        # mainbar page 2
+        self.ui.bt_rename_2.clicked.connect(lambda: self.go_for_rename(2, i1=self.ui.rn_2_input_1.text(), i2=self.ui.rn_2_input_2.text(), i3=self.ui.rn_2_input_3.isChecked()))
+        # self.ui.bt_reset_2.clicked.connect(lambda: self.reset_page_2())
+
+        # mainbar page 3
+        self.ui.bt_rename_3.clicked.connect(lambda: self.go_for_rename(3, i1=self.ui.rn_3_input_1.text(), i2=self.ui.rn_3_input_2.isChecked(), i3=self.ui.rn_3_input_3.currentIndex(), i4=self.ui.rn_3_input_4.currentIndex(), i5=self.ui.rn_3_input_5.text(), i6=self.ui.rn_3_input_6.text(), i7=self.ui.rn_3_input_7.isChecked(), i8=self.ui.rn_3_input_8.text(), i9=self.ui.rn_3_input_9.text()))
+        # self.ui.bt_reset_3.clicked.connect(lambda: self.reset_page_3())
+        self.ui.bt_help_3_1.clicked.connect(lambda: self.show_help_dialog(1))
+        self.ui.bt_help_3_2.clicked.connect(lambda: self.show_help_dialog(2))
+        self.ui.bt_help_3_3.clicked.connect(lambda: self.show_help_dialog(2))
+
+        # mainbar page 4
+        self.ui.bt_rename_4.clicked.connect(lambda: self.go_for_rename(4, i1=self.ui.rn_4_input_1.text(), i2=self.ui.rn_4_input_2.text(), i3=self.ui.rn_4_input_3.isChecked(), i4=self.ui.rn_4_input_4.text(), i5=self.ui.rn_4_input_5.text(), i6=self.ui.rn_4_input_6.text(), i7=self.ui.rn_4_input_7.text(), i8=self.ui.rn_4_input_8.text(), i9=self.ui.rn_4_input_9.text(), i10=self.ui.rn_4_input_10.currentIndex(), i11=self.ui.rn_4_input_11.text(), i12=self.ui.rn_4_input_12.text(), i13=self.ui.rn_4_input_13.text(), i14=self.ui.rn_4_input_14.text(), i15=self.ui.rn_4_input_15.text(), i16=self.ui.rn_4_input_16.text(), i17=self.ui.rn_4_input_17.currentIndex(), i18=self.ui.rn_4_input_18.text(), i19=self.ui.rn_4_input_19.text(), i20=self.ui.rn_4_input_20.text(), i21=self.ui.rn_4_input_21.text(), i22=self.ui.rn_4_input_22.text(), i23=self.ui.rn_4_input_23.currentIndex()))
+        # self.ui.bt_reset_4.clicked.connect(lambda: self.reset_page_4())
+
+    def go_for_rename(self, code, **arg):
+        pass
 
 if __name__ == '__main__':
     mainWindow = MainWindow()
