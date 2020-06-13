@@ -15,9 +15,10 @@ class MainWindow(QtWidgets.QMainWindow):
         super(MainWindow, self).__init__(parent)
         self.ui.setupUi(self)
         self.setWindowTitle("NW File Renamer")
-        self.setIcons(ic1=app.get_resource('plus.png'), ic2=app.get_resource('add.png'), ic3=app.get_resource('clear.png'), ic4=app.get_resource('reset.png'), ic5=app.get_resource('exit.png'))
         self.about_page = None
         self.dialog = None
+        self.setIcons(ic1=app.get_resource('plus.png'), ic2=app.get_resource('add.png'), ic3=app.get_resource('clear.png'), ic4=app.get_resource('reset.png'), ic5=app.get_resource('exit.png'))
+        self.set_menu_toolbar_button_action()
 
     def setIcons(self, **arg):
         icon = QtGui.QIcon(arg.get('ic4', ''))
@@ -38,6 +39,30 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionClear_1.setIcon(icon)
         self.ui.actionAdd_Multiple_Folder.setIcon(QtGui.QIcon(arg.get('ic2', '')))
         self.ui.actionAbout_the_Author.setIcon(QtGui.QIcon(self.main_icon))
+
+    def set_menu_toolbar_button_action(self):
+        # menu
+        # self.ui.actionAbout_the_Author.triggered.connect(lambda: see_about(self))
+        self.ui.actionExit_1.triggered.connect(lambda: sys.exit(0))
+        # self.ui.actionAdd_1.triggered.connect(lambda: self.select_folder())
+        # self.ui.actionAdd_Multiple_Folder.triggered.connect(lambda: self.select_folder(multiple=True))
+        # self.ui.actionClear.triggered.connect(lambda: self.clear_all_folders())
+        # self.ui.actionReset.triggered.connect(lambda: self.reset_all())
+
+        # toolbar
+        # self.ui.actionAdd.triggered.connect(lambda: self.select_folder())
+        # self.ui.actionClear.triggered.connect(lambda: self.clear_all_folders())
+        # self.ui.actionReset.triggered.connect(lambda: self.reset_all())
+        self.ui.actionExit.triggered.connect(lambda: sys.exit(0))
+
+        # sidebar
+        self.ui.bt_main_menu.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(0))
+
+        # mainbar main page
+        self.ui.bt_menu_1.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(1))
+        self.ui.bt_menu_2.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(2))
+        self.ui.bt_menu_3.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(3))
+        self.ui.bt_menu_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(4))
 
 
 if __name__ == '__main__':
