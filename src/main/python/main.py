@@ -2,6 +2,7 @@ from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5 import QtCore, QtGui, QtWidgets
 from main_ui import Ui_MainWindow
 from dialogs import Ui_AboutPage
+from rename_dialog import RenameDialog
 from tool import FileData, get_int, is_valid_filename, is_valid_date_format, is_valid_dir, join, Path, get_splitted_by_pipe
 
 import sys
@@ -38,6 +39,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("NW File Renamer")
         self.about_page = None
         self.dialog = None
+        self.rename_ui = None
         self.setIcons(ic1=app.get_resource('plus.png'), ic2=app.get_resource('add.png'), ic3=app.get_resource('clear.png'), ic4=app.get_resource('reset.png'), ic5=app.get_resource('exit.png'))
         self.set_menu_toolbar_button_action()
         self.set_mainpage_buttons()
@@ -544,7 +546,11 @@ class MainWindow(QtWidgets.QMainWindow):
         if len(self.FILEDATA.selected_folders) == 0:
             return self.show_message("No <b>Folder</b> is selected!")
         
-        # TODO Rename Files
+        if self.rename_ui == None:
+            self.rename_ui = RenameDialog()
+
+        self.rename_ui.set_data(self.FILEDATA.get_all_folders(data['s1']), code, data, arg)
+        self.rename_ui.show()
 
 if __name__ == '__main__':
     mainWindow = MainWindow()
