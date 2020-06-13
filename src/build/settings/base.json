@@ -1,0 +1,6 @@
+{
+    "app_name": "NW File Renamer",
+    "author": "Md Nayeem",
+    "main_module": "src/main/python/main.py",
+    "version": "1.0.1"
+}
