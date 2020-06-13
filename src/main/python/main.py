@@ -2,7 +2,7 @@ from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5 import QtCore, QtGui, QtWidgets
 from main_ui import Ui_MainWindow
 from dialogs import Ui_AboutPage
-from tool import FileData, is_valid_dir, join, Path, get_splitted_by_pipe
+from tool import FileData, get_int, is_valid_filename, is_valid_date_format, is_valid_dir, join, Path, get_splitted_by_pipe
 
 import sys
 
@@ -420,8 +420,131 @@ class MainWindow(QtWidgets.QMainWindow):
         self.reset_page_3()
         self.reset_page_4()
 
+    def show_message(self, text, title="Warning", subtitle="Error Found."):
+        if subtitle:
+            subtitle = '<b>' + subtitle + '</b>'
+        return QtWidgets.QMessageBox.warning(self, "Warning", f"<p style=\"font-size: 10pt;\">{subtitle} {text}</p>")
+
     def go_for_rename(self, code, **arg):
-        pass
+        if code == 1:
+            if arg['i1'] != 2:
+                if arg['i2'] == '':
+                    return self.show_message("Wanted extension is missing!")
+                if not is_valid_filename(arg['i2']):
+                    return self.show_message("Wanted extension is invalid!")
+        elif code == 2:
+            if arg['i1'] == '' and arg['i2'] == '':
+                return self.show_message("Both <b>Suffix</b> and <b>Prefix</b> are missing!")
+            if not is_valid_filename(arg['i1']):
+                return self.show_message("Prefix is invalid!")
+            if not is_valid_filename(arg['i2']):
+                return self.show_message("Suffix is invalid!")
+        elif code == 3:
+            if arg['i1'] == '':
+                return self.show_message("Name Format is missing!")
+            if not is_valid_filename(arg['i1'].replace("<no>", "").replace("<c_date>", "").replace("<m_date>", "").replace("<size>", "").replace("<sizeb>", "").replace("<file>", "").replace("<filename>", "").replace("<ext>", "")):
+                return self.show_message("Name Format is invalid!")
+            if not is_valid_filename(arg['i5']):
+                return self.show_message("Prefix is invalid!")
+            if not is_valid_filename(arg['i6']):
+                return self.show_message("Suffix is invalid!")
+            if arg['i8'] == "" and "<c_date>" in arg['i1']:
+                return self.show_message("Create date format is missing!")
+            if arg['i9'] == "" and "<m_date>" in arg['i1']:
+                return self.show_message("Modify date format is missing!")
+            if not is_valid_date_format(arg['i8']):
+                return self.show_message("Create date format is invalid!")
+            if not is_valid_date_format(arg['i9']):
+                return self.show_message("Modify date format is invalid!")
+        elif code == 4:
+            if not (arg['i1'] or arg['i2'] or arg['i4'] or arg['i7'] or arg['i8'] or arg['i9'] or arg['i11'] or arg['i13'] or arg['i14'] or arg['i15'] or arg['i18'] or arg['i20']):
+                return self.show_message("Nothing to do! Please, make any change.")
+            if not is_valid_filename(arg['i1']):
+                return self.show_message("Prefix is invalid!")
+            if not is_valid_filename(arg['i2']):
+                return self.show_message("Suffix is invalid!")
+            if not arg['i4'] and arg['i5']:
+                return self.show_message("Replace --> Old Field is required to work!")
+            if not is_valid_filename(arg['i5']):
+                return self.show_message("Replace --> New Field is invalid!")
+            if not is_valid_filename(arg['i6']):
+                return self.show_message("Replace Range --> Text Field is invalid!")
+            if arg['i7'] or arg['i8']:
+                if arg['i7'] and get_int(arg['i7']) is None:
+                    return self.show_message("Replace Range --> Start Index is Invalid!")
+                if arg['i8'] and get_int(arg['i8']) is None:
+                    return self.show_message("Replace Range --> End Index is Invalid!")
+            if not is_valid_filename(arg['i9']):
+                return self.show_message("Remove --> Text Field is invalid!")
+            if arg['i11'] and arg['i12']:
+                if get_int(arg['i12']) is None:
+                    return self.show_message("Remove --> Number Feild is Invalid!")
+                if get_int(arg['i12']) < 0:
+                    return self.show_message("Remove --> Number Feild is cannot be less than 0 !")
+            if arg['i13'] or arg['i14']:
+                if arg['i13'] and get_int(arg['i13']) is None:
+                    return self.show_message("Remove Range --> Start Index Feild is Invalid!")
+                if arg['i14'] and get_int(arg['i14']) is None:
+                    return self.show_message("Remove Range --> End Index Feild is Invalid!")
+            if not is_valid_filename(arg['i15']):
+                return self.show_message("Add Text --> Text Field is invalid!")
+            if arg['i15']:
+                if not arg['i16']:
+                    return self.show_message("Add Text --> Index Field is required!")
+                if get_int(arg['i16']) is None:
+                    return self.show_message("Add Text --> Index Field is invalid!")
+            if not is_valid_filename(arg['i19']):
+                return self.show_message("Add Text --> New Field is invalid!")
+            if arg['i18'] and not arg['i19']:
+                return self.show_message("Add Text --> New Field is required!")
+            if not arg['i18'] and arg['i19']:
+                return self.show_message("Add Text --> Old Field is required!")
+            if not arg['i20'] and (arg['i21'] or arg['i22']):
+                return self.show_message("Transfer Text --> New Position Field is required!")
+            if arg['i20']:
+                if get_int(arg['i20']) is None:
+                    return self.show_message("Transfer Text --> New Position Field is invalid!")
+                if not (arg['i21'] or arg['i22']):
+                    return self.show_message("Transfer Text --> Old Start and End Index Field is required!")
+                if arg['i21'] and get_int(arg['i21']) is None:
+                    return self.show_message("Transfer Text --> Old Start Index Field is invalid!")
+                if arg['i22'] and get_int(arg['i22']) is None:
+                    return self.show_message("Transfer Text --> Old End Index Field is invalid!")
+
+            arg['i7'] = get_int(arg['i7'])
+            arg['i8'] = get_int(arg['i8'])
+            arg['i12'] = get_int(arg['i12'])
+            arg['i13'] = get_int(arg['i13'])
+            arg['i14'] = get_int(arg['i14'])
+            arg['i16'] = get_int(arg['i16'])
+            arg['i20'] = get_int(arg['i20'])
+            arg['i21'] = get_int(arg['i21'])
+            arg['i22'] = get_int(arg['i22'])
+        else:
+            return
+        data = {
+            's1': self.ui.side_input_1.isChecked(),
+            's2': self.ui.side_input_2.isChecked(),
+            's3': self.ui.side_input_3.isChecked(),
+            's4': self.ui.side_input_4.text(),
+            's5': self.ui.side_input_5.text(),
+            's6': self.ui.side_input_6.text(),
+            's7': self.ui.side_input_7.text(),
+            's8': self.ui.side_input_8.isChecked(),
+            's9': self.ui.side_input_9.isChecked(),
+            's10': self.ui.side_input_10.text(),
+            's11': self.ui.side_input_11.text(),
+            's12': self.ui.side_input_12.text(),
+            's13': self.ui.side_input_13.text(),
+        }
+        if data['s2'] and not data['s3'] and not get_splitted_by_pipe(data['s4']) and not get_splitted_by_pipe(data['s5']) and not get_splitted_by_pipe(data['s6']) and not get_splitted_by_pipe(data['s7']):
+            return self.show_message("<b>Only Allow System</b> is enabled but nothing to do!")
+        if data['s8'] and not data['s9'] and not get_splitted_by_pipe(data['s10']) and not get_splitted_by_pipe(data['s11']) and not get_splitted_by_pipe(data['s12']) and not get_splitted_by_pipe(data['s13']):
+            return self.show_message("<b>Ignore System</b> is enabled but nothing to do!")
+        if len(self.FILEDATA.selected_folders) == 0:
+            return self.show_message("No <b>Folder</b> is selected!")
+        
+        # TODO Rename Files
 
 if __name__ == '__main__':
     mainWindow = MainWindow()
