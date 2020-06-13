@@ -1,6 +1,7 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5 import QtCore, QtGui, QtWidgets
 from main_ui import Ui_MainWindow
+from dialogs import Ui_AboutPage
 from tool import FileData, is_valid_dir, join, Path, get_splitted_by_pipe
 
 import sys
@@ -63,7 +64,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_menu_toolbar_button_action(self):
         # menu
-        # self.ui.actionAbout_the_Author.triggered.connect(lambda: see_about(self))
+        self.ui.actionAbout_the_Author.triggered.connect(lambda: self.see_about())
         self.ui.actionExit_1.triggered.connect(lambda: sys.exit(0))
         self.ui.actionAdd_1.triggered.connect(lambda: self.select_folder())
         self.ui.actionAdd_Multiple_Folder.triggered.connect(lambda: self.select_folder(multiple=True))
@@ -114,6 +115,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.FILEDATA.reset()
         self.ui.txt_stat.setText(self.FILEDATA.get_status_txt())
 
+    def see_about(self):
+        if self.about_page is None:
+            self.about_page = QtWidgets.QWidget()
+            self.about_page.ui = Ui_AboutPage()
+            self.about_page.ui.setupUi(self.about_page)
+            self.about_page.ui.version.setText(f'v{self.app_version}')
+            self.about_page.ui.icon.setPixmap(QtGui.QPixmap(self.main_icon))
+            self.about_page.ui.name.setText("NW File Renamer")
+        self.about_page.destroy()
+        self.about_page.show()
 
 if __name__ == '__main__':
     mainWindow = MainWindow()
