@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, CustomLabel):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(575, 595)
         font = QtGui.QFont()
@@ -166,7 +166,7 @@ class Ui_MainWindow(object):
         self.formLayout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.side_input_7)
         self.formLayout_8.setWidget(3, QtWidgets.QFormLayout.SpanningRole, self.widget_0_1)
         self.gridLayout_3.addLayout(self.formLayout_8, 2, 0, 1, 1)
-        self.txt_stat = QtWidgets.QLabel(self.side_layout)
+        self.txt_stat = CustomLabel(self.side_layout, MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)

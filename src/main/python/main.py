@@ -7,6 +7,22 @@ import sys
 
 app = ApplicationContext()
 
+class CustomLabel(QtWidgets.QLabel):
+    def __init__(self, parent, main):
+        super(QtWidgets.QLabel, self).__init__(parent)
+        self.setAcceptDrops(True)
+        self.Root = main
+        
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+            
+    def dropEvent(self, event):
+        if event.mimeData().hasUrls():
+            self.Root.select_folder(drag=True, folders=[i.toLocalFile() for i in event.mimeData().urls()])
+
 class MainWindow(QtWidgets.QMainWindow):
     app_version = app.build_settings['version']
     main_icon = app.get_resource('icon.png')
@@ -17,7 +33,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
-        self.ui.setupUi(self)
+        self.ui.setupUi(self, CustomLabel)
         self.setWindowTitle("NW File Renamer")
         self.about_page = None
         self.dialog = None
