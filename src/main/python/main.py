@@ -1,12 +1,24 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import QMainWindow
+from main_ui import Ui_MainWindow
 
 import sys
 
+app = ApplicationContext()
+
+
+class MainWindow(QMainWindow):
+    app_version = app.build_settings['version']
+    ui = Ui_MainWindow()
+
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
+        self.setWindowTitle("NW File Renamer")
+        self.ui.setupUi(self)
+
+
+
 if __name__ == '__main__':
-    appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
-    window = QMainWindow()
-    window.resize(250, 150)
-    window.show()
-    exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
-    sys.exit(exit_code)
+    mainWindow = MainWindow()
+    mainWindow.show()
+    sys.exit(app.app.exec_())
