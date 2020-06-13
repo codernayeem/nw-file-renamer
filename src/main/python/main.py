@@ -70,12 +70,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionAdd_1.triggered.connect(lambda: self.select_folder())
         self.ui.actionAdd_Multiple_Folder.triggered.connect(lambda: self.select_folder(multiple=True))
         self.ui.actionClear.triggered.connect(lambda: self.clear_all_folders())
-        # self.ui.actionReset.triggered.connect(lambda: self.reset_all())
+        self.ui.actionReset.triggered.connect(lambda: self.reset_all())
 
         # toolbar
         self.ui.actionAdd.triggered.connect(lambda: self.select_folder())
         self.ui.actionClear.triggered.connect(lambda: self.clear_all_folders())
-        # self.ui.actionReset.triggered.connect(lambda: self.reset_all())
+        self.ui.actionReset.triggered.connect(lambda: self.reset_all())
         self.ui.actionExit.triggered.connect(lambda: sys.exit(0))
 
         # sidebar
@@ -332,7 +332,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def set_mainpage_buttons(self):
         # mainbar page 1
         self.ui.bt_rename_1.clicked.connect(lambda: self.go_for_rename(1, i1=self.ui.rn_1_input_1.currentIndex(), i2=self.ui.rn_1_input_2.text()))
-        # self.ui.bt_reset_1.clicked.connect(lambda: self.reset_page_1())
+        self.ui.bt_reset_1.clicked.connect(lambda: self.reset_page_1())
         def disable_wanted_ext(self, i):
             if i == 2:
                 self.ui.widget_1_1.setEnabled(False)
@@ -342,18 +342,83 @@ class MainWindow(QtWidgets.QMainWindow):
         
         # mainbar page 2
         self.ui.bt_rename_2.clicked.connect(lambda: self.go_for_rename(2, i1=self.ui.rn_2_input_1.text(), i2=self.ui.rn_2_input_2.text(), i3=self.ui.rn_2_input_3.isChecked()))
-        # self.ui.bt_reset_2.clicked.connect(lambda: self.reset_page_2())
+        self.ui.bt_reset_2.clicked.connect(lambda: self.reset_page_2())
 
         # mainbar page 3
         self.ui.bt_rename_3.clicked.connect(lambda: self.go_for_rename(3, i1=self.ui.rn_3_input_1.text(), i2=self.ui.rn_3_input_2.isChecked(), i3=self.ui.rn_3_input_3.currentIndex(), i4=self.ui.rn_3_input_4.currentIndex(), i5=self.ui.rn_3_input_5.text(), i6=self.ui.rn_3_input_6.text(), i7=self.ui.rn_3_input_7.isChecked(), i8=self.ui.rn_3_input_8.text(), i9=self.ui.rn_3_input_9.text()))
-        # self.ui.bt_reset_3.clicked.connect(lambda: self.reset_page_3())
+        self.ui.bt_reset_3.clicked.connect(lambda: self.reset_page_3())
         self.ui.bt_help_3_1.clicked.connect(lambda: self.show_help_dialog(1))
         self.ui.bt_help_3_2.clicked.connect(lambda: self.show_help_dialog(2))
         self.ui.bt_help_3_3.clicked.connect(lambda: self.show_help_dialog(2))
 
         # mainbar page 4
         self.ui.bt_rename_4.clicked.connect(lambda: self.go_for_rename(4, i1=self.ui.rn_4_input_1.text(), i2=self.ui.rn_4_input_2.text(), i3=self.ui.rn_4_input_3.isChecked(), i4=self.ui.rn_4_input_4.text(), i5=self.ui.rn_4_input_5.text(), i6=self.ui.rn_4_input_6.text(), i7=self.ui.rn_4_input_7.text(), i8=self.ui.rn_4_input_8.text(), i9=self.ui.rn_4_input_9.text(), i10=self.ui.rn_4_input_10.currentIndex(), i11=self.ui.rn_4_input_11.text(), i12=self.ui.rn_4_input_12.text(), i13=self.ui.rn_4_input_13.text(), i14=self.ui.rn_4_input_14.text(), i15=self.ui.rn_4_input_15.text(), i16=self.ui.rn_4_input_16.text(), i17=self.ui.rn_4_input_17.currentIndex(), i18=self.ui.rn_4_input_18.text(), i19=self.ui.rn_4_input_19.text(), i20=self.ui.rn_4_input_20.text(), i21=self.ui.rn_4_input_21.text(), i22=self.ui.rn_4_input_22.text(), i23=self.ui.rn_4_input_23.currentIndex()))
-        # self.ui.bt_reset_4.clicked.connect(lambda: self.reset_page_4())
+        self.ui.bt_reset_4.clicked.connect(lambda: self.reset_page_4())
+
+    def reset_page_1(self):
+        self.ui.rn_1_input_1.setCurrentIndex(0)
+        self.ui.rn_1_input_2.setText('')
+
+    def reset_page_2(self):
+        self.ui.rn_2_input_1.setText("")
+        self.ui.rn_2_input_2.setText("")
+        self.ui.rn_2_input_3.setChecked(True)
+
+    def reset_page_3(self):
+        self.ui.rn_3_input_1.setText("")
+        self.ui.rn_3_input_2.setChecked(True)
+        self.ui.rn_3_input_3.setCurrentIndex(0)
+        self.ui.rn_3_input_4.setCurrentIndex(0)
+        self.ui.rn_3_input_5.setText("")
+        self.ui.rn_3_input_6.setText("")
+        self.ui.rn_3_input_7.setChecked(True)
+        self.ui.rn_3_input_8.setText("")
+        self.ui.rn_3_input_9.setText("")
+
+    def reset_page_4(self):
+        self.ui.rn_4_input_1.setText("")
+        self.ui.rn_4_input_2.setText("")
+        self.ui.rn_4_input_3.setChecked(True)
+        self.ui.rn_4_input_4.setText("")
+        self.ui.rn_4_input_5.setText("")
+        self.ui.rn_4_input_6.setText("")
+        self.ui.rn_4_input_7.setText("")
+        self.ui.rn_4_input_8.setText("")
+        self.ui.rn_4_input_9.setText("")
+        self.ui.rn_4_input_10.setCurrentIndex(0)
+        self.ui.rn_4_input_11.setText("")
+        self.ui.rn_4_input_12.setText("")
+        self.ui.rn_4_input_13.setText("")
+        self.ui.rn_4_input_14.setText("")
+        self.ui.rn_4_input_15.setText("")
+        self.ui.rn_4_input_16.setText("")
+        self.ui.rn_4_input_17.setCurrentIndex(0)
+        self.ui.rn_4_input_18.setText("")
+        self.ui.rn_4_input_19.setText("")
+        self.ui.rn_4_input_20.setText("")
+        self.ui.rn_4_input_21.setText("")
+        self.ui.rn_4_input_22.setText("")
+        self.ui.rn_4_input_23.setCurrentIndex(0)
+
+    def reset_all(self):
+        self.last_selected_dir = 'C:'
+        self.ui.side_input_1.setChecked(False)
+        self.ui.side_input_2.setChecked(False)
+        self.ui.side_input_3.setChecked(False)
+        self.ui.side_input_4.setText("")
+        self.ui.side_input_5.setText("")
+        self.ui.side_input_6.setText("")
+        self.ui.side_input_7.setText("")
+        self.ui.side_input_8.setChecked(False)
+        self.ui.side_input_9.setChecked(False)
+        self.ui.side_input_10.setText("")
+        self.ui.side_input_11.setText("")
+        self.ui.side_input_12.setText("")
+        self.ui.side_input_13.setText("")
+        self.reset_page_1()
+        self.reset_page_2()
+        self.reset_page_3()
+        self.reset_page_4()
 
     def go_for_rename(self, code, **arg):
         pass
