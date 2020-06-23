@@ -2,7 +2,71 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from tool import rename_file, join, get_sizebyte, sizeSince, get_c_date, get_m_date, get_splitted_by_pipe, is_valid_dir, is_valid_date_format, get_files, get_folders, check_plural, is_valid_filename, get_filename_extension
 from os import system
 from pathlib import Path
-from threading import Thread
+from PyQt5.QtCore import QThread, pyqtSignal
+
+
+class renameThread(QThread):
+    outSignal = pyqtSignal(str)
+
+    def __init__(self, main):
+        QThread.__init__(self)
+        self.main = main
+
+    def run(self):
+        done = 0
+        fail = 0
+        ignored = 0
+        not_allowed = 0
+
+        total_on_folders = 0
+        for folder in self.main.folders:
+            files = get_files(folder)
+            if self.main.code == 3:
+                files = self.main.sort_file_list(folder, files, self.main.arg['i3'], self.main.arg['i4'])
+            total_on_a_folder = 0
+            for a_file in files:
+                filename, ext = get_filename_extension(a_file)
+                status = self.main.check_for_allow_and_ignore(a_file, filename, ext)
+                if status == 1:
+                    ignored += 1
+                    self.outSignal.emit(f"<b>[+] - Ignored :</b> {join(folder, a_file)}")
+                elif status == 2:
+                    not_allowed += 1
+                    self.outSignal.emit(f"<b>[+] - Not Allowed :</b> {join(folder, a_file)}")
+                else:
+                    total_on_a_folder += 1
+                    total_on_folders += 1
+
+                    try:
+                        new_name = self.main.get_new_name(a_file, filename, ext, folder, total_on_a_folder, total_on_folders)
+                    except Exception as e:
+                        print(e)
+                        self.outSignal.emit(f"<b>[+] - Error :</b> {join(folder, a_file)}  <b>>>></b> Error on making new name")
+                        self.outSignal.emit(f"<b>[+] - Stopping Renaming</b>")
+                        self.main.do_log(False, join(folder, a_file), '')
+                        break
+
+                    if rename_file(folder, a_file, new_name):
+                        done += 1
+                        self.outSignal.emit(f"<b>[+] - Done :</b> {join(folder, a_file)}  <b>>></b>  {new_name}")
+                        self.main.do_log(True, join(folder, a_file), new_name)
+                    else:
+                        fail += 1
+                        self.main.do_log(False, join(folder, a_file), new_name)
+                        self.outSignal.emit(f"<b>[+] - Failed :</b> {join(folder, a_file)}  <b>>></b>  {new_name}")
+        self.outSignal.emit("")
+        self.outSignal.emit(f"<b>[+] - Renaming Finished</b>")
+        self.outSignal.emit("")
+        total = done + fail + ignored + not_allowed
+        self.outSignal.emit(f"<table> <tr> <td><b>[+] - Total</b></td> <td>:</td> <td>{total}</td> </tr> <tr> <td><b>[+] - Renamed</b></td> <td>:</td> <td>{done}</td> </tr> <tr> <td><b>[+] - Failed</b></td> <td>:</td> <td>{fail}</td> </tr> <tr> <td><b>[+] - Not Allowed</b></td> <td>:</td> <td>{not_allowed}</td> </tr> <tr> <td><b>[+] - Ignored</b></td> <td>:</td> <td>{ignored}</td> </tr> </table>")
+        self.outSignal.emit("")
+        if self.main.log_file is not None and self.main.make_log:
+            self.main.log_file.close()
+            if self.main.make_log_error:
+                self.outSignal.emit(f"[+] - <b>Log Failed</b>")
+            else:
+                self.outSignal.emit(f"[+] - Log path : <b>{str(Path('logs.txt').absolute())}</b>")
+        self.outSignal.emit(f"[+] - Press Finish to quit")
 
 class RenameDialog(QtWidgets.QWidget):
     make_log = True
@@ -109,70 +173,22 @@ class RenameDialog(QtWidgets.QWidget):
         self.add_text_on_board(f"<b>[+] - Renaming Started</b>")
         self.add_text_on_board(f"")
 
-        done = 0
-        fail = 0
-        ignored = 0
-        not_allowed = 0
-
         if self.make_log is None:
             try:
                 self.log_file = open('logs.txt', 'w')
             except:
                 self.make_log_error = True
 
-        total_on_folders = 0
-        for folder in self.folders:
-            files = get_files(folder)
-            if self.code == 3:
-                files = self.sort_file_list(folder, files, self.arg['i3'], self.arg['i4'])
-            total_on_a_folder = 0
-            for a_file in files:
-                filename, ext = get_filename_extension(a_file)
-                status = self.check_for_allow_and_ignore(a_file, filename, ext)
-                if status == 1:
-                    ignored += 1
-                    self.add_text_on_board(f"<b>[+] - Ignored :</b> {join(folder, a_file)}")
-                elif status == 2:
-                    not_allowed += 1
-                    self.add_text_on_board(f"<b>[+] - Not Allowed :</b> {join(folder, a_file)}")
-                else:
-                    total_on_a_folder += 1
-                    total_on_folders += 1
+        self.thread = renameThread(self)
+        self.thread.finished.connect(self.rename_finished)
+        self.thread.outSignal.connect(self.add_text_on_board)
+        self.thread.start()
 
-                    try:
-                        new_name = self.get_new_name(a_file, filename, ext, folder, total_on_a_folder, total_on_folders)
-                    except Exception as e:
-                        print(e)
-                        self.add_text_on_board(f"<b>[+] - Error :</b> {join(folder, a_file)}  <b>>>></b> Error on making new name")
-                        self.add_text_on_board(f"<b>[+] - Stopping Renaming</b>")
-                        self.do_log(False, join(folder, a_file), '')
-                        break
-
-                    if rename_file(folder, a_file, new_name):
-                        done += 1
-                        self.add_text_on_board(f"<b>[+] - Done :</b> {join(folder, a_file)}  <b>>></b>  {new_name}")
-                        self.do_log(True, join(folder, a_file), new_name)
-                    else:
-                        fail += 1
-                        self.do_log(False, join(folder, a_file), new_name)
-                        self.add_text_on_board(f"<b>[+] - Failed :</b> {join(folder, a_file)}  <b>>></b>  {new_name}")
+    def rename_finished(self):
         self.ui.bt_finish.setEnabled(True)
         if self.make_log and not self.make_log_error:
             self.ui.bt_openlog.setEnabled(True)
         self.ui.txt_count_stat.setText("Done")
-        self.add_text_on_board("")
-        self.add_text_on_board(f"<b>[+] - Renaming Finished</b>")
-        self.add_text_on_board("")
-        total = done + fail + ignored + not_allowed
-        self.add_text_on_board(f"<table> <tr> <td><b>[+] - Total</b></td> <td>:</td> <td>{total}</td> </tr> <tr> <td><b>[+] - Renamed</b></td> <td>:</td> <td>{done}</td> </tr> <tr> <td><b>[+] - Failed</b></td> <td>:</td> <td>{fail}</td> </tr> <tr> <td><b>[+] - Not Allowed</b></td> <td>:</td> <td>{not_allowed}</td> </tr> <tr> <td><b>[+] - Ignored</b></td> <td>:</td> <td>{ignored}</td> </tr> </table>")
-        self.add_text_on_board("")
-        if self.log_file is not None and self.make_log:
-            self.log_file.close()
-            if self.make_log_error:
-                self.add_text_on_board(f"[+] - <b>Log Failed</b>")
-            else:
-                self.add_text_on_board(f"[+] - Log path : <b>{str(Path('logs.txt').absolute())}</b>")
-        self.add_text_on_board(f"[+] - Press Finish to quit")
 
     def check_for_allow_and_ignore(self, fl_name, filename, ext):
         if self.sidedata['s8']:
