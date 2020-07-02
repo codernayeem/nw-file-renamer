@@ -2,14 +2,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from tool import rename_file, join, get_sizebyte, sizeSince, get_c_date, get_m_date, get_splitted_by_pipe, is_valid_dir, is_valid_date_format, get_files, get_folders, check_plural, is_valid_filename, get_filename_extension
 from os import system
 from pathlib import Path
-from PyQt5.QtCore import QThread, pyqtSignal
+from threading import Thread
 
 
-class renameThread(QThread):
-    outSignal = pyqtSignal(str)
+class renameThread(QtCore.QThread):
+    outSignal = QtCore.pyqtSignal(str)
 
     def __init__(self, main):
-        QThread.__init__(self)
+        QtCore.QThread.__init__(self)
         self.main = main
 
     def run(self):
@@ -173,7 +173,7 @@ class RenameDialog(QtWidgets.QWidget):
         self.add_text_on_board(f"<b>[+] - Renaming Started</b>")
         self.add_text_on_board(f"")
 
-        if self.make_log is None:
+        if self.make_log:
             try:
                 self.log_file = open('logs.txt', 'w')
             except:
@@ -338,7 +338,8 @@ class RenameDialog(QtWidgets.QWidget):
             except:
                 try:
                     self.log_file.write(f'{succes}  "<Cannot write filepath and newname>"\n')
-                except:
+                except Exception as e:
+                    print(e)
                     self.make_log_error = True
 
     def open_log(self):
