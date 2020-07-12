@@ -365,7 +365,7 @@ class Ui_MainWindow(object):
         font.setFamily("Berlin Sans FB")
         font.setPointSize(16)
         self.bt_menu_3.setFont(font)
-        self.bt_menu_3.setText("Serealize")
+        self.bt_menu_3.setText("Serialize")
         self.bt_menu_3.setObjectName("bt_menu_3")
         self.gridLayout_6.addWidget(self.bt_menu_3, 5, 0, 1, 1)
         self.bt_menu_4 = QtWidgets.QPushButton(self.choose_layout)
