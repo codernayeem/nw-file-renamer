@@ -43,7 +43,7 @@ class Ui_AboutPage(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.email.setFont(font)
-        self.email.setText("nayemmia898@gmail.com")
+        self.email.setText("nayeem.code@gmail.com")
         self.gridLayout.addWidget(self.email, 1, 1, 1, 1)
         self.gridLayout.setColumnStretch(1, 2)
         self.widget = QtWidgets.QWidget(AboutPage)
